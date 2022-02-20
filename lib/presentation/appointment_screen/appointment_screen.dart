@@ -23,7 +23,7 @@ class AppointmentScreen extends StatefulWidget {
 class _AppointmentScreenState extends State<AppointmentScreen> {
   late ReservationCubit reservationCubit;
   late ServicesAndBill servicesAndBill;
-  late int chosenHour;
+  int chosenHour = 0;
   DateTime? _selectedDay = DateTime.now();
   DateTime _focusedDay = DateTime.now();
   CalendarFormat _calendarFormat = CalendarFormat.month;
@@ -78,10 +78,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
             builder: (context, state) {
               return UploadButton(
                 title: 'Upload',
-                onPressed: () {
-                  _chooseDateAndTime();
-                  reservationCubit.checkIfPatientVisitedBefore(widget.patient);
-                },
+                onPressed: _onUploading,
               );
             },
           ),
@@ -157,5 +154,36 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
       chosenHour,
     );
     widget.patient.visitTime = _chosenDateAndTime;
+  }
+
+  void _viewErrorDialog() {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text(
+          'Error',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        content: const Text('Please choose the appointment hour'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Ok'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _onUploading() {
+    if (chosenHour == 0) {
+      _viewErrorDialog();
+    } else {
+      _chooseDateAndTime();
+      reservationCubit.checkIfPatientVisitedBefore(widget.patient);
+    }
   }
 }

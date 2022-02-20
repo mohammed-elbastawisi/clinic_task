@@ -1,9 +1,12 @@
+import 'dart:math';
+
 import 'package:clinic_task/constants/strings.dart';
 import 'package:clinic_task/data/model/examination.dart';
 import 'package:clinic_task/data/model/patient.dart';
 import 'package:clinic_task/data/model/procedures.dart';
 import 'package:clinic_task/data/model/services_and_bill.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class ReservationsDetailsScreen extends StatelessWidget {
   final List<ServicesAndBill> patientService;
@@ -35,8 +38,12 @@ class ReservationsDetailsScreen extends StatelessWidget {
 
   StatelessWidget _buildListViewItem(
       Patient patient, DoctorExamination doctorExamination, int index) {
+    var visitDate = DateFormat('dd - MM - yyy').format(patient.visitTime);
+    var visitTime = DateFormat('hh:00').format(patient.visitTime);
     return Card(
       margin: const EdgeInsets.all(15),
+      color: Colors.grey[100],
+      elevation: 2,
       child: Padding(
         padding: const EdgeInsets.all(15),
         child: Column(
@@ -50,6 +57,7 @@ class ReservationsDetailsScreen extends StatelessWidget {
               'Patient Phone Number :',
               patient.phoneNumber.toString(),
             ),
+            _buildTableItem('Date and Time :', '$visitDate at $visitTime PM'),
             _buildTableItem('Diagnosis :', doctorExamination.diagnosis!),
             _buildTableItem('Drug Prescription :', ''),
             _buildDrugPrescriptionAndRedTestsList(
